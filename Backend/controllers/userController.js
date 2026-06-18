@@ -24,7 +24,7 @@ const createUser = async (req, res) => {
         await newUser.save();
 
         // Send Email
-        const url = `http://localhost:3000/verify/${token}`;
+        const url = `https://white-board-app-jade.vercel.app/verify/${token}`;
         await transporter.sendMail({
             from: process.env.EMAIL_USER,
             to: email,

@@ -11,7 +11,7 @@ const port = process.env.PORT || 5000;
 
 // --- MIDDLEWARE ---
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: ["http://localhost:3000" , "https://white-board-app-jade.vercel.app"],
   credentials: true
 }));
 app.use(express.json({ limit: "100mb" })); // or higher depending on your needs
@@ -32,7 +32,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000" , "https://white-board-app-jade.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   },
