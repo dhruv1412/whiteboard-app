@@ -25,18 +25,6 @@ app.use("/canvas", canvasRoutes);
 
 
 // --- CREATE HTTP SERVER AND SOCKET.IO ---
-// const http = require("http");
-// const { Server } = require("socket.io");
-
-// const server = http.createServer(app);
-// const io = new Server(server, {
-//   cors: {
-//     origin: true,
-//     methods: ["GET", "POST","PUT","DELETE"],
-//     credentials: true,
-//   },
-// });
-
 const http = require("http");
 const { Server } = require("socket.io");
 

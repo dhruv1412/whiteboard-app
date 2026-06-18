@@ -6,7 +6,7 @@ import getStroke from 'perfect-freehand';
 import { useParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
 
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = "https://white-board-app-aww3.onrender.com";
 
 const socket = io(BASE_URL, {
   transports: ["websocket"],

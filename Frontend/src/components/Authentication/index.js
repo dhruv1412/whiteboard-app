@@ -33,7 +33,7 @@ export default function Auth({ onLogin }) {
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      const res = await fetch("http://localhost:5000/google-login", {
+      const res = await fetch("https://white-board-app-aww3.onrender.com/google-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ credential: credentialResponse.credential }),
@@ -72,7 +72,7 @@ export default function Auth({ onLogin }) {
     }
     // ----------------------------------------------
 
-    const url = isSignup ? "http://localhost:5000/register" : "http://localhost:5000/login";
+    const url = isSignup ? "https://white-board-app-aww3.onrender.com/register" : "https://white-board-app-aww3.onrender.com/login";
 
     try {
       const res = await fetch(url, {
