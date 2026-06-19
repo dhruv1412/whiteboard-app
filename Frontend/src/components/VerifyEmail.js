@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./index.css"; // Uses the same CSS as your login page
+import "./Authentication/index.css"; // Uses the same CSS as your login page
 
 export default function VerifyEmail() {
   const navigate = useNavigate();
