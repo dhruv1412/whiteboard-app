@@ -22,6 +22,7 @@ const transporter = nodemailer.createTransport({
     tls: {
         rejectUnauthorized: false
     }
+    amily: 4
 });
 
 const createUser = async (req, res) => {
