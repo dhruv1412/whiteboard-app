@@ -1,29 +1,14 @@
 const userModel = require('../models/userModel');
-const OtpModel = require('../models/otpModel'); // Import the new OTP model
-const bcrypt = require('bcrypt'); // Import bcrypt for hashing before temporary storage
+const OtpModel = require('../models/otpModel');
+const bcrypt = require('bcrypt');
 require("dotenv").config();
 const JWT = require("jsonwebtoken");
 const { OAuth2Client } = require('google-auth-library');
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 const crypto = require('crypto');
+
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-
-const dns = require('dns');
-dns.setDefaultResultOrder('ipv4first');
-
-const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false, // Must be false for port 587
-    auth: { 
-        user: process.env.EMAIL_USER, 
-        pass: process.env.EMAIL_PASS 
-    },
-    tls: {
-        rejectUnauthorized: false
-    },
-    family: 4
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const createUser = async (req, res) => {
     try {
@@ -40,18 +25,18 @@ const createUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-        // 3. Save to temporary OTP collection (Upsert prevents multiple entries for same email)
+        // 3. Save to temporary OTP collection
         console.log("3. Saving to temporary OTP DB...");
         await OtpModel.findOneAndUpdate(
             { email },
             { name, email, password: hashedPassword, otp: otpCode, createdAt: Date.now() },
-            { upsert: true, returnDocument: 'after' } // <--- CHANGED 'new: true' to 'returnDocument: "after"'
+            { upsert: true, returnDocument: 'after' }
         );
 
-        // 4. Send Email
-        console.log("4. Attempting to send email via Nodemailer...");
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER,
+        // 4. Send Email via Resend
+        console.log("4. Attempting to send email via Resend...");
+        const { error: resendError } = await resend.emails.send({
+            from: 'CollaBoard <onboarding@resend.dev>',
             to: email,
             subject: "Your CollaBoard Verification Code",
             html: `
@@ -63,8 +48,15 @@ const createUser = async (req, res) => {
                 </div>
             `
         });
+
+        if (resendError) {
+            console.error("!!! RESEND ERROR !!!", resendError);
+            return res.status(500).json({ error: "Failed to send verification email. Please try again." });
+        }
+
         console.log("5. Email sent! Sending success response to frontend...");
         res.status(201).json({ message: "Registration initiated. Please check your email for the verification code." });
+
     } catch (error) {
         console.error("!!! ERROR CAUGHT IN CATCH BLOCK !!!", error);
         res.status(500).json({ error: error.message });
@@ -80,7 +72,6 @@ const verifyEmail = async (req, res) => {
         if (!tempUser) return res.status(400).json({ error: "Invalid or expired verification code." });
 
         // 2. Move user to the main Users collection
-        // Since the password is already hashed, we save it directly to the model
         const newUser = new userModel({
             name: tempUser.name,
             email: tempUser.email,
@@ -128,8 +119,8 @@ const googleLogin = async (req, res) => {
             user = new userModel({ name, email, isVerified: true });
             await user.save();
         } else if (!user.isVerified) {
-             user.isVerified = true;
-             await user.save();
+            user.isVerified = true;
+            await user.save();
         }
 
         const token = JWT.sign({ email: user.email }, process.env.JWT_ACCESS_SECRET, { expiresIn: "7h" });
@@ -140,10 +131,10 @@ const googleLogin = async (req, res) => {
     }
 };
 
-const getUserProfile = async (req,res) =>{
+const getUserProfile = async (req, res) => {
     const email = req.email;
     const user = await userModel.getUser(email);
-    res.json({ name:user.name, email:user.email });
+    res.json({ name: user.name, email: user.email });
 }
 
 module.exports = { createUser, verifyEmail, login, googleLogin, getUserProfile };

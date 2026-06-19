@@ -94,7 +94,10 @@ function App() {
       />
 
       {/* Changed this route: Removed the /:token parameter */}
-      <Route path="/verify" element={<VerifyEmail />} />
+      <Route 
+        path="/verify" 
+        element={token ? <Navigate to="/dashboard" /> : <VerifyEmail />} 
+      />
 
       {/* Default redirect */}
       <Route path="*" element={<Navigate to={token ? "/dashboard" : "/auth"} />} />
