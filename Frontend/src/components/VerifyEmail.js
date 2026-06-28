@@ -28,7 +28,7 @@ export default function VerifyEmail() {
     setStatus("");
  
     try {
-      const res = await fetch("${process.env.REACT_APP_API_URL}/verify", {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, code }),

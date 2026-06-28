@@ -2,7 +2,7 @@ export const updateCanvas = async(canvasId, elements)=>{
   const token = localStorage.getItem("token");
   if (!canvasId || !token) return;
   try {
-    await fetch("${process.env.REACT_APP_API_URL}/canvas/update", {
+    await fetch(`${process.env.REACT_APP_API_URL}/canvas/update`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
