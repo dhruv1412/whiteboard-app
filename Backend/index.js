@@ -36,7 +36,11 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000", "https://white-board-app-jade.vercel.app"],
+    origin: [
+      "http://localhost:3000",
+      "http://127.0.0.1:3000",
+      process.env.FRONTEND_URL
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   },
