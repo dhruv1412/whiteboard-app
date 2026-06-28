@@ -1,0 +1,13 @@
+# Ignore sensitive environment variables
+.env
+.env.local
+
+# Ignore heavy dependency folders
+node_modules/
+Frontend/node_modules/
+Backend/node_modules/
+
+# Ignore production builds and OS logs
+.DS_Store
+dist/
+build/

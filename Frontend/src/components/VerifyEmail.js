@@ -26,9 +26,9 @@ export default function VerifyEmail() {
     setLoading(true);
     setMessage(null);
     setStatus("");
-
+ 
     try {
-      const res = await fetch("https://white-board-app-aww3.onrender.com/verify", {
+      const res = await fetch("${process.env.REACT_APP_API_URL}/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, code }),

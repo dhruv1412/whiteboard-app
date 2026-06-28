@@ -17,7 +17,7 @@ function Dashboard({ onLogout }) {
   const u_id = localStorage.getItem("userId");
 
   useEffect(() => {
-    fetch("https://white-board-app-aww3.onrender.com/canvas", {
+    fetch("${process.env.REACT_APP_API_URL}/canvas", {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(async (res) => {
@@ -40,7 +40,7 @@ function Dashboard({ onLogout }) {
   const handleCreate = async () => {
     if (!newName.trim()) return showNotification("Name required", "error");
     try {
-      const res = await fetch("https://white-board-app-aww3.onrender.com/canvas/create", {
+      const res = await fetch("${process.env.REACT_APP_API_URL}/canvas/create", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ name: newName }),
@@ -59,7 +59,7 @@ function Dashboard({ onLogout }) {
 
   const handleDelete = async (id) => {
     try {
-      const res = await fetch("https://white-board-app-aww3.onrender.com/canvas/delete", {
+      const res = await fetch("${process.env.REACT_APP_API_URL}/canvas/delete", {
         method: "DELETE", 
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ canvasId: id }),
@@ -77,7 +77,7 @@ function Dashboard({ onLogout }) {
   const handleShare = async (id) => {
     if (!shareEmail.trim()) return showNotification("Email required", "error");
     try {
-      const res = await fetch(`https://white-board-app-aww3.onrender.com/canvas/share/${id}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/canvas/share/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ shareEmail }),
